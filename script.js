@@ -1,8 +1,10 @@
-// Variables globales
 let uploadedFiles = [];
 let currentTheme = 'light';
 
 function initializeTheme() {
+    const savedTheme = getSavedTheme() || 'light';
+    currentTheme = savedTheme;
+    
     const body = document.body;
     const themeToggle = document.getElementById('input');
 
@@ -12,14 +14,29 @@ function initializeTheme() {
     }
 }
 
-function saveTheme(theme) {
-    currentTheme = theme;
+function getSavedTheme() {
+    try
+     {
+        return sessionStorage.getItem('theme');
+    } catch (e) 
+    {
+        return currentTheme;
+    }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function saveTheme(theme) {
+    currentTheme = theme;
+    try {
+        sessionStorage.setItem('theme', theme);
+    } catch (e) {
+        console.log('SessionStorage no disponible, usando solo variable local');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() 
+{
     initializeTheme();
-    
-    // Theme toggle
+  
     const themeToggle = document.getElementById('input');
     if (themeToggle) {
         themeToggle.addEventListener('change', function() {
@@ -30,8 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initializeFileUpload();
-    
-    // Smooth scrolling para enlaces internos
+
     document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -56,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Cargar archivos del repositorio después de un delay
     setTimeout(() => {
         loadRepositoryFiles();
     }, 1000);
@@ -192,36 +207,73 @@ function deleteFile(fileId) {
     renderFileList();
 }
 
-// Funciones de GitHub API
+//  GitHub API
 const GITHUB_API = 'https://api.github.com';
 const REPO_OWNER = 'ParkMu-Jin';
 const REPO_NAME = 'KITSUNE';
 
 function getFileIcon(fileName) {
     const extension = fileName.split('.').pop().toLowerCase();
+    const iconSize = 20; // Tamaño más apropiado para las cards
+    
     const icons = {
-        'js': '📄',
-        'html': '🌐',
-        'css': '🎨',
-        'py': '🐍',
-        'java': '☕',
-        'cpp': '⚙️',
-        'c': '⚙️',
-        'txt': '📄',
-        'md': '📋',
-        'json': '📊',
-        'xml': '📄',
-        'pdf': '📑',
-        'doc': '📄',
-        'docx': '📄',
-        'jpg': '🖼️',
-        'jpeg': '🖼️',
-        'png': '🖼️',
-        'gif': '🖼️',
-        'zip': '📦',
-        'rar': '📦'
+        'js': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/javascript.png" alt="javascript"/>`,
+        'ts': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/typescript.png" alt="typescript"/>`,
+        'jsx': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/react-native.png" alt="react"/>`,
+        'tsx': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/react-native.png" alt="react"/>`,
+        'py': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/python.png" alt="python"/>`,
+        'java': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/java-coffee-cup-logo.png" alt="java"/>`,
+        'cpp': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/c-plus-plus-logo.png" alt="cpp"/>`,
+        'c': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/c-programming.png" alt="c"/>`,
+        'cs': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/c-sharp-logo.png" alt="csharp"/>`,
+        'php': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/php-logo.png" alt="php"/>`,
+        'rb': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/ruby-programming-language.png" alt="ruby"/>`,
+        'go': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/golang.png" alt="golang"/>`,
+        'swift': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/swift.png" alt="swift"/>`,
+        'kt': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/kotlin.png" alt="kotlin"/>`,
+        
+        'html': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/html-5.png" alt="html"/>`,
+        'htm': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/html-5.png" alt="html"/>`,
+        'css': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/css3.png" alt="css"/>`,
+        'scss': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/sass.png" alt="sass"/>`,
+        'sass': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/sass.png" alt="sass"/>`,
+        
+        'json': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/json.png" alt="json"/>`,
+        'xml': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/xml-file.png" alt="xml"/>`,
+        'yaml': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/settings-file.png" alt="yaml"/>`,
+        'yml': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/settings-file.png" alt="yaml"/>`,
+        
+        'md': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/markdown.png" alt="markdown"/>`,
+        'txt': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/txt.png" alt="text"/>`,
+        'pdf': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/pdf.png" alt="pdf"/>`,
+        'doc': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/word.png" alt="word"/>`,
+        'docx': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/word.png" alt="word"/>`,
+        
+        'jpg': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/jpg.png" alt="image"/>`,
+        'jpeg': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/jpg.png" alt="image"/>`,
+        'png': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/png.png" alt="image"/>`,
+        'gif': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/gif.png" alt="gif"/>`,
+        'svg': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/svg.png" alt="svg"/>`,
+
+        'mp3': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/mp3.png" alt="audio"/>`,
+        'mp4': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/mp4.png" alt="video"/>`,
+        
+        'zip': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/zip.png" alt="zip"/>`,
+        'rar': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/rar.png" alt="rar"/>`,
+        
+        'sql': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/sql.png" alt="database"/>`,
+        'db': `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/database.png" alt="database"/>`,
     };
-    return icons[extension] || '📄';
+    
+    const fileName_lower = fileName.toLowerCase();
+    if (fileName_lower.includes('readme')) return `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/markdown.png" alt="readme"/>`;
+    if (fileName_lower.includes('license')) return `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/certificate.png" alt="license"/>`;
+    if (fileName_lower.includes('dockerfile')) return `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/docker.png" alt="docker"/>`;
+    if (fileName_lower.includes('makefile')) return `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/settings-file.png" alt="makefile"/>`;
+    if (fileName_lower.includes('.gitignore')) return `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/git.png" alt="git"/>`;
+    if (fileName_lower.includes('package.json')) return `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/npm.png" alt="npm"/>`;
+    
+    return icons[extension] || `<img width="${iconSize}" height="${iconSize}" src="https://img.icons8.com/ios-filled/${iconSize}/file.png" alt="file"/>`;
 }
 
 function formatFileSize(bytes) {
@@ -248,7 +300,6 @@ async function fetchRepoInfo() {
         
         const repo = await response.json();
         
-        // Actualizar estadísticas si existen los elementos
         safeElementOperation('#lastUpdate', (el) => {
             el.textContent = formatDate(repo.updated_at);
         });
@@ -302,22 +353,18 @@ async function loadRepositoryFiles() {
     if (!container) return;
     
     try {
-        // Cargar información del repositorio
         const repoInfo = await fetchRepoInfo();
         
-        // Cargar archivos del repositorio
         const files = await fetchRepoContents();
         
         if (!files) {
             throw new Error('No se pudieron cargar los archivos');
         }
         
-        // Actualizar contador de archivos si existe
         safeElementOperation('#fileCount', (el) => {
             el.textContent = files.length;
         });
         
-        // Crear grid de archivos
         const filesGrid = files.map(file => createFileCard(file)).join('');
         
         container.innerHTML = `
@@ -340,7 +387,6 @@ async function loadRepositoryFiles() {
     }
 }
 
-// Función auxiliar para operaciones seguras en elementos
 function safeElementOperation(selector, operation) {
     const element = document.querySelector(selector);
     if (element && typeof operation === 'function') {
