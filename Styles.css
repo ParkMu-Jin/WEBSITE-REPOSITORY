@@ -226,9 +226,16 @@ body {
     background: none;
     border: none;
     color: var(--text-color);
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--accent-color);
+    color: white;
 }
 
 .switch {
@@ -800,8 +807,45 @@ body {
         top: 10px;
         left: 10px;
         right: 10px;
+        transform: none;
         padding: 10px 20px;
         border-radius: 25px;
+        width: auto;
+    }
+
+    .navbar-content {
+        gap: 15px;
+        position: relative;
+        justify-content: space-between;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+        order: 2;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        right: 0;
+        background: var(--navbar-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 15px;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 5px 20px var(--shadow);
+        z-index: 1001;
+        display: none;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .switch {
+        order: 3;
     }
 
     .main-container {
@@ -844,37 +888,25 @@ body {
     }
 }
 
-@media screen and (max-width: 320px) {
-    .mobile-menu-toggle {
-        display: block !important;
+@media screen and (max-width: 480px) {
+    .navbar {
+        padding: 8px 15px;
     }
 
     .navbar-content {
-        position: relative;
+        gap: 10px;
     }
 
-    .nav-links {
-        display: none !important;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--navbar-bg);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 10px;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 10px;
-        box-shadow: 0 5px 20px var(--shadow);
-        z-index: 1001;
+    .hero-title {
+        font-size: 2rem;
     }
 
-    .nav-links.active {
-        display: flex !important;
+    .section-title {
+        font-size: 1.8rem;
     }
 
     .main-container {
-        margin-top: 60px;
+        margin-top: 80px;
+        padding: 0 10px;
     }
 }
